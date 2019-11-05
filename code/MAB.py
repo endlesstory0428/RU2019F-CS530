@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import env
+import reward
 
 class strategy(object):
 	def __init__(self, machine, maxIter, b, d, delta):
@@ -18,7 +19,7 @@ class strategy(object):
 		return
 
 	def getChoice(self):
-		self.probHistory[time] = self.prob
+		self.probHistory[self.time] = self.prob
 		bound = np.cumsum(self.prob)
 		sample = np.random.rand()
 		choice = np.searchsorted(bound, sample)
@@ -33,11 +34,28 @@ class strategy(object):
 
 	def play(self, iters):
 		for i in range(iters):
-			choice = self.getChoice
+			choice = self.getChoice()
 			reward = self.machine.pull(choice)
 			self.updateProb(choice, reward)
 		return
 
 	def plot(self, iters):
 		self.machine.showReward()
+		x = np.array(range(iters))
+		color = ['b', 'g', 'r', 'c', 'c', 'm', 'y', 'k']
+		for i in range(self.numArm):
+			plt.plot(x, self.probHistory[:iters, i], color[i])
+		plt.show()
 		return
+
+if __name__ == '__main__':
+	rewardList = [0.1, 0.3, 0.5, 0.9]
+	probList = [0.1, 0.2, 0.3, 0.4]
+	interval = 15000
+	probClass = reward.constR
+	maxIter = 15000
+	M = env.machine(rewardList = rewardList, probList = probList, interval = interval, probClass = probClass, maxIter = maxIter)
+	S = strategy(machine = M, maxIter = maxIter, b = 0.05, d = 0, delta = 0)
+
+	S.play(15000)
+	S.plot(15000)

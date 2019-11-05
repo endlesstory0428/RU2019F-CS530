@@ -1,5 +1,5 @@
 import numpy as np
-import matpoltlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 import reward as rwd
 
@@ -7,6 +7,7 @@ class machineHistory(object):
 	def __init__(self, rewardList, maxIter):
 		super(machineHistory, self).__init__()
 		self.rewardList = rewardList
+		self.maxIter = maxIter
 		self.choice = np.empty(self.maxIter, dtype = np.int8)
 		self.reward = np.empty(self.maxIter, dtype = np.float64)
 		self.optChoice = np.empty(self.maxIter, dtype = np.int8)
