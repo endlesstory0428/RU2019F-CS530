@@ -27,12 +27,8 @@ class strategy(object):
 		return choice
 
 	def updateProb(self, choice, reward):
-		# dProb = self.prob * self.b * reward
-		# dProb[choice] = dProb[choice] - np.sum(dProb)
-		dPopulation = np.zeros_like(self.prob, dtype = np.float64)
 		factor = self.b * (reward -self.d * np.power(self.population[choice], self.delta))
-		dPopulation[choice] = dPopulation[choice] + factor / (1 - factor) 
-		self.population = self.population + dPopulation
+		self.population[choice] = self.population[choice] + factor / (1 - factor) 
 		self.prob = self.population / np.sum(self.population)
 		self.time = self.time + 1
 		return
@@ -55,12 +51,12 @@ class strategy(object):
 
 if __name__ == '__main__':
 	rewardList = [0.1, 0.3, 0.5, 0.9]
-	probList = [0.4, 0.3, 0.2, 0.1]
+	probList = [0.3, 0.4, 0.1, 0.2]
 	interval = 15000
 	probClass = reward.constR
 	maxIter = 15000
 	M = env.machine(rewardList = rewardList, probList = probList, interval = interval, probClass = probClass, maxIter = maxIter)
-	S = strategy(machine = M, maxIter = maxIter, b = 0.05, d = 0.5, delta = 0.5)
+	S = strategy(machine = M, maxIter = maxIter, b = 0.1, d = 0.0001, delta = 0.05)
 
 	S.play(15000)
 	S.plot(15000)
