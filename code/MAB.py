@@ -11,7 +11,7 @@ class strategy(object):
 		self.maxIter = maxIter
 		self.b = b
 		self.d = d
-		self.delta = 1 + delta
+		self.delta = delta
 		self.numArm = self.machine.probList.size
 		self.population = np.full(self.numArm, 1 / self.numArm, dtype = np.float64)
 		self.prob = self.population / np.sum(self.population)
@@ -27,8 +27,8 @@ class strategy(object):
 		return choice
 
 	def updateProb(self, choice, reward):
-		factor = self.b * (reward -self.d * np.power(self.population[choice], self.delta))
-		self.population[choice] = self.population[choice] + factor / (1 - factor) 
+		factor = self.b * (reward - self.d * np.power(self.population[choice], self.delta))
+		self.population[choice] = np.max([self.population[choice] + factor / (1 - factor) * np.sum(self.population), self.population[choice] * 0.1])
 		self.prob = self.population / np.sum(self.population)
 		self.time = self.time + 1
 		return
@@ -53,11 +53,11 @@ if __name__ == '__main__':
 	rewardList = [0.1, 0.3, 0.5, 0.9]
 	probList = [0.3, 0.4, 0.1, 0.2]
 	interval = 15000
-	probClass = reward.constR
-	maxIter = 15000
+	probClass = reward.cyclicalR
+	maxIter = 60000
 	M = env.machine(rewardList = rewardList, probList = probList, interval = interval, probClass = probClass, maxIter = maxIter)
-	S = strategy(machine = M, maxIter = maxIter, b = 0.1, d = 0.0001, delta = 0.05)
+	S = strategy(machine = M, maxIter = maxIter, b = 0.01, d = 0.05, delta = 0.15)
 
-	S.play(15000)
-	S.plot(15000)
+	S.play(60000)
+	S.plot(60000)
 	print(S.prob)
