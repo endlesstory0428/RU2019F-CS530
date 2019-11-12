@@ -41,12 +41,12 @@ class strategy(object):
 		return
 
 	def plot(self, iters):
+		plt.figure(2)
 		self.machine.showReward()
 		x = np.array(range(iters))
 		color = ['b', 'g', 'r', 'c', 'c', 'm', 'y', 'k']
 		for i in range(self.numArm):
 			plt.plot(x, self.probHistory[:iters, i], color[i])
-		plt.show()
 		return
 
 if __name__ == '__main__':
@@ -60,4 +60,6 @@ if __name__ == '__main__':
 
 	S.play(60000)
 	S.plot(60000)
+	S.machine.history.plot()
 	print(S.prob)
+	plt.show()

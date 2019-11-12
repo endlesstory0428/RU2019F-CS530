@@ -31,6 +31,14 @@ class machineHistory(object):
 		self.cumReward = self.cumReward + tempReward
 		self.cumOptReward = self.cumOptReward + tempOptReward
 		return
+
+	def plot(self):
+		plt.figure(1)
+		color = ['b', 'g', 'r', 'c', 'c', 'm', 'y', 'k']
+		for i in range(self.rewardList.size):
+			index = np.where(self.optChoice == i)
+			plt.scatter(index, self.optReward[index], c = color[i])
+		return
 		
 
 class machine(object):
