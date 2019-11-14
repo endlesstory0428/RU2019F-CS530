@@ -52,14 +52,14 @@ class strategy(object):
 if __name__ == '__main__':
 	rewardList = [0.1, 0.3, 0.5, 0.9]
 	probList = [0.3, 0.4, 0.1, 0.2]
-	interval = 15000
-	probClass = reward.cyclicalR
+	interval = 30000
+	probClass = reward.cosinR
 	maxIter = 60000
 	M = env.machine(rewardList = rewardList, probList = probList, interval = interval, probClass = probClass, maxIter = maxIter)
 	S = strategy(machine = M, maxIter = maxIter, b = 0.01, d = 0.05, delta = 0.15)
 
 	S.play(60000)
 	S.plot(60000)
-	S.machine.history.plot()
+	S.machine.history.plot(60000)
 	print(S.prob)
 	plt.show()

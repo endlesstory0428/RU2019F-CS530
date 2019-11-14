@@ -12,6 +12,7 @@ class machineHistory(object):
 		self.reward = np.empty(self.maxIter, dtype = np.float64)
 		self.optChoice = np.empty(self.maxIter, dtype = np.int8)
 		self.optReward = np.empty(self.maxIter, dtype = np.float64)
+		self.wholeReward = np.empty((self.rewardList.size, self.maxIter), dtype = np.float64)
 		self.cumReward = 0
 		self.cumOptReward = 0
 		return
@@ -19,25 +20,30 @@ class machineHistory(object):
 	def getOpt(self, probList):
 		tempReward = self.rewardList * probList
 		optIdx = np.argmax(tempReward)
-		return optIdx, tempReward[optIdx]
+		return optIdx, tempReward
 
 	def uptade(self, time, choice, result, probList):
-		tempReward = self.rewardList[choice] * result
-		optIdx, tempOptReward = self.getOpt(probList)
+		tempReward = result
+		optIdx, tempWholeReward = self.getOpt(probList)
 		self.choice[time] = choice
 		self.reward[time] = tempReward
 		self.optChoice[time] = optIdx
-		self.optReward[time] = tempOptReward
+		self.optReward[time] = tempWholeReward[optIdx]
+		self.wholeReward[:, time] = tempWholeReward
 		self.cumReward = self.cumReward + tempReward
-		self.cumOptReward = self.cumOptReward + tempOptReward
+		self.cumOptReward = self.cumOptReward + tempWholeReward[optIdx]
 		return
 
-	def plot(self):
+	def plot(self, time):
 		plt.figure(1)
 		color = ['b', 'g', 'r', 'c', 'c', 'm', 'y', 'k']
+		x = np.array(range(time), dtype = np.int32)
 		for i in range(self.rewardList.size):
-			index = np.where(self.optChoice == i)
-			plt.scatter(index, self.optReward[index], c = color[i])
+			mask = np.zeros(time, dtype = np.bool)
+			index = np.where(self.optChoice[:time] == i)
+			mask[index] = True
+			plt.scatter(x[mask], self.wholeReward[i][mask], c = color[i], marker = 'X')
+			plt.scatter(x[~mask], self.wholeReward[i][~mask], c = color[i], marker = '_')
 		return
 		
 
@@ -56,10 +62,10 @@ class machine(object):
 
 	def pull(self, choice):
 		tempProb = self.prob.getMu(self.time)
-		result = np.random.rand() < tempProb[choice]
+		result = (np.random.rand() < tempProb[choice]) * self.rewardList[choice]
 		self.history.uptade(self.time, choice, result, tempProb)
 		self.time = self.time + 1
-		return result * self.rewardList[choice]
+		return result
 
 	def showReward(self):
 		tempProb = self.prob.getMu(self.time)
