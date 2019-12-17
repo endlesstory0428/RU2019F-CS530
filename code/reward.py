@@ -62,7 +62,7 @@ class cosinR(object):
 	def _constructProbFunc(self):
 		def getProbFunc(probList, interval, bias = 0):
 			probSize = probList.size
-			phase = ((np.array(range(probSize), dtype = np.float64) + bias) % probSize) / probSize * 2 * np.pi
+			phase = ((1.5 * np.array(range(probSize), dtype = np.float64) + bias) % probSize) / probSize * 2 * np.pi
 			def probFunc(time):
 				tempProb = probList * (2 + np.cos(time * interval + phase))
 				return tempProb / np.sum(tempProb)

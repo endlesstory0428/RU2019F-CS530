@@ -36,14 +36,14 @@ class machineHistory(object):
 
 	def plot(self, time):
 		plt.figure(1)
-		color = ['b', 'g', 'r', 'c', 'c', 'm', 'y', 'k']
+		color = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
 		x = np.array(range(time), dtype = np.int32)
 		for i in range(self.rewardList.size):
 			mask = np.zeros(time, dtype = np.bool)
 			index = np.where(self.optChoice[:time] == i)
 			mask[index] = True
-			plt.scatter(x[mask], self.wholeReward[i][mask], c = color[i], marker = 'X')
-			plt.scatter(x[~mask], self.wholeReward[i][~mask], c = color[i], marker = '_')
+			plt.scatter(x[mask], self.wholeReward[i][mask], c = color[i], marker = 'o', s = 10)
+			plt.scatter(x[~mask], self.wholeReward[i][~mask], c = color[i], marker = 'o', s = 0.2)
 		return
 		
 
