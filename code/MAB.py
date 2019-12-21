@@ -11,7 +11,7 @@ class strategy(object):
 		self.maxIter = maxIter
 		self.b = b
 		self.d = d
-		self.delta = delta
+		self.delta = delta + 1
 		self.numArm = self.machine.probList.size
 		self.population = np.full(self.numArm, 1 / self.numArm, dtype = np.float64)
 		self.prob = self.population / np.sum(self.population)
@@ -64,16 +64,16 @@ class strategy(object):
 		return
 
 def getAverage(iters):
-	rewardList = [0.1, 0.5, 0.7, 0.9]
-	probList = [0.3, 0.1, 0.15, 0.1]
-	interval = 30000
-	probClass = reward.cosinR
+	rewardList = [0.1, 0.3, 0.5, 0.9]
+	probList = [0.2, 0.3, 0.4, 0.1]
+	interval = 20000
+	probClass = reward.cyclicalR
 	maxIter = 60000
 	fullProbHistory = np.empty((iters, maxIter, len(probList)))
 	fullCumReward = np.empty(iters)
 	for i in range(iters):
 		M = env.machine(rewardList = rewardList, probList = probList, interval = interval, probClass = probClass, maxIter = maxIter)
-		S = strategy(machine = M, maxIter = maxIter, b = 0.01, d = 0.1, delta = 1.2)
+		S = strategy(machine = M, maxIter = maxIter, b = 0.05, d = 0.9, delta = 0.2)
 		S.play(maxIter)
 		fullProbHistory[i] = S.probHistory
 		fullCumReward[i] = S.machine.history.cumReward
@@ -83,13 +83,17 @@ def getAverage(iters):
 	wholeCumReward = np.sum(S.machine.history.wholeReward, axis = 1)
 	randCumReward = np.sum(np.average(S.machine.history.wholeReward, axis = 0))
 	rand3CumReward = np.sum(np.average(S.machine.history.wholeReward[:3], axis = 0))
+	print('algorithm:')
 	print(cumReward / S.machine.history.cumOptReward)
+	print('stick on one rate:')
 	print(wholeCumReward / S.machine.history.cumOptReward)
+	print('random select:')
 	print(randCumReward / S.machine.history.cumOptReward)
+	print('random in first 3:')
 	print(rand3CumReward / S.machine.history.cumOptReward)
 	S.plot(maxIter, history)
 	S.machine.history.plot(maxIter)
 	plt.show()
 
 if __name__ == '__main__':
-	getAverage(1)
+	getAverage(10)

@@ -1,2 +1,2 @@
 # RU2019F-CS530
-Multi-Armed Bandit problems
+Online Rate Selection in Nonstationary Wireless Channels
