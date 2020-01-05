@@ -64,16 +64,16 @@ class strategy(object):
 		return
 
 def getAverage(iters):
-	rewardList = [0.1, 0.3, 0.5, 0.9]
-	probList = [0.2, 0.3, 0.4, 0.1]
+	rewardList = [0.1, 0.5, 0.7, 0.9]
+	probList = [0.3, 0.1, 0.15, 0.1]
 	interval = 20000
-	probClass = reward.cyclicalR
+	probClass = reward.cosinR
 	maxIter = 60000
 	fullProbHistory = np.empty((iters, maxIter, len(probList)))
 	fullCumReward = np.empty(iters)
 	for i in range(iters):
 		M = env.machine(rewardList = rewardList, probList = probList, interval = interval, probClass = probClass, maxIter = maxIter)
-		S = strategy(machine = M, maxIter = maxIter, b = 0.05, d = 0.9, delta = 0.2)
+		S = strategy(machine = M, maxIter = maxIter, b = 0.01, d = 0.1, delta = 0.2)
 		S.play(maxIter)
 		fullProbHistory[i] = S.probHistory
 		fullCumReward[i] = S.machine.history.cumReward
